@@ -1,4 +1,4 @@
-import { Controller, Get, Query, Post, Body, Put, Param, Delete } from '@nestjs/common';
+/* import { Controller, Get, Query, Post, Body, Put, Param, Delete } from '@nestjs/common';
 import CreateCatDto from './dto/createcat-dto';
 import { UpdateCatDto } from './dto/updatecat-dto';
 import { CatsService } from './catsservice';
@@ -39,4 +39,41 @@ export class CatsController {
   remove(@Param('id') id: string) {
     return `This action removes a #${id} cat`;
   }
+} */
+
+import { Controller, Get, Query, Post, Body, Put, Param, Delete } from '@nestjs/common';
+import { CreateCatDto } from './dto/createcat-dto';
+import { UpdateCatDto } from './dto/updatecat-dto';
+import { CatsService } from './catsservice';
+import { Cat } from './interfaces/cat.interface';
+import { ParseIntPipe } from '@nestjs/common';
+
+@Controller('cats')
+export class CatsController {
+ constructor(private catsService: CatsService) {}
+
+ @Post()
+ async create(@Body() createCatDto: CreateCatDto): Promise<Cat> {
+    return this.catsService.create(createCatDto);
+ }
+
+ @Get()
+ async findAll(): Promise<Cat[]> {
+    return this.catsService.findAll();
+ }
+
+ @Get(':id')
+ async findOne(@Param('id') id: number): Promise<Cat | null> {
+    return this.catsService.findOne(id);
+ }
+
+ @Put(':id')
+ async update(@Param('id') id: number, @Body() updateCatDto: UpdateCatDto): Promise<Cat> {
+    return this.catsService.update(id, updateCatDto);
+ }
+
+ @Delete(':id')
+async remove(@Param('id', ParseIntPipe) id: number): Promise<Cat> {
+    return this.catsService.remove(id);
+}
 }
